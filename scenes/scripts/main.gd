@@ -3,8 +3,15 @@ extends Node2D
 # CONFIG
 @export var MAX_VELOCITY = 20
 @export var GRAVITY: float = 1.5
-@export var MIN_TIME : float = 1.0
-@export var MAX_TIME : float = 10.0
+@export var MIN_TIME: float = 1.0
+@export var MAX_TIME: float = 10.0
+
+@export var CLICK_THREHOLD: int = 5
+@export var CLICK_TIME: float = 1.0
+
+var click_count = 0
+var click_timer: Timer
+
 const DRAG_THRESHOLD = 5
 const BOUNCE_DAMPING = 0.5
 const FRICTION = 0.9
@@ -84,12 +91,17 @@ func _ready() -> void:
 
 	_random_animation()
 
+	click_timer = Timer.new()
+	click_timer.wait_time = CLICK_TIME
+	click_timer.one_shot = true
+	click_timer.timeout.connect(_on_click_timer_timeout)
+	add_child(click_count)
+
 
 func _process(delta):
 	# If are chilling, we hit 'return'
 	# if state == State.CHILLING: return
 	# _process_walking()
-
 	match state:
 		State.WALKING:
 			_process_walking()
@@ -189,6 +201,7 @@ func _process_thrown():
 func _on_area_input(_viewport, event, _shape_idx):
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
 		if event.pressed:
+			_register_click()
 			_start_dragging()
 			# start_chilling()
 		else:
@@ -259,6 +272,16 @@ func _random_animation():
 
 			state = State.WALKING
 			anim.play("walk")
+
+
+func _on_click_timer_timeout() -> void:
+	click_count = 0
+
+
+func _register_click() -> void:
+	click_count += 1
+	pass # continue soon
+
 
 # This function not working on linux wayland
 # func _update_mouse_mask():
