@@ -472,7 +472,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_a82wo")
 }, {
-"duration": 1.0,
+"duration": 2.0,
 "texture": SubResource("AtlasTexture_gdvew")
 }, {
 "duration": 1.0,
@@ -487,22 +487,22 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_j4bwh")
 }, {
-"duration": 1.0,
+"duration": 1.5,
 "texture": SubResource("AtlasTexture_ksmap")
 }, {
-"duration": 1.0,
+"duration": 1.5,
 "texture": SubResource("AtlasTexture_ygd8o")
 }, {
-"duration": 1.0,
+"duration": 1.5,
 "texture": SubResource("AtlasTexture_2s0kr")
 }, {
-"duration": 1.0,
+"duration": 1.5,
 "texture": SubResource("AtlasTexture_xaipn")
 }, {
-"duration": 1.0,
+"duration": 1.5,
 "texture": SubResource("AtlasTexture_ndrjj")
 }, {
-"duration": 1.0,
+"duration": 1.5,
 "texture": SubResource("AtlasTexture_ih3m7")
 }, {
 "duration": 1.0,
@@ -517,19 +517,19 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_vtx2l")
 }, {
-"duration": 1.0,
+"duration": 1.5,
 "texture": SubResource("AtlasTexture_63lxy")
 }, {
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_fjhjs")
 }, {
-"duration": 1.0,
+"duration": 1.5,
 "texture": SubResource("AtlasTexture_bfu41")
 }, {
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_r4ag1")
 }, {
-"duration": 1.0,
+"duration": 1.5,
 "texture": SubResource("AtlasTexture_v0wtd")
 }, {
 "duration": 1.0,
@@ -538,7 +538,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_6nfnn")
 }, {
-"duration": 1.0,
+"duration": 3.0,
 "texture": SubResource("AtlasTexture_4ue30")
 }],
 "loop": 0,
@@ -704,16 +704,15 @@ radius = 63.03174
 position = Vector2(-6, 2)
 script = ExtResource("1_sugp2")
 MAX_VELOCITY = 40
+CLICK_THREHOLD = 3
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=774969354]
 texture_filter = 1
 position = Vector2(71, 55.000008)
 scale = Vector2(2.03125, 2.203125)
 sprite_frames = SubResource("SpriteFrames_dfnip")
-animation = &"multi_click"
+animation = &"idle"
 autoplay = "walk"
-frame = 25
-frame_progress = 1.0
 speed_scale = 2.0
 
 [node name="Area2D" type="Area2D" parent="." unique_id=680737912]
