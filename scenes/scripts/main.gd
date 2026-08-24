@@ -95,10 +95,10 @@ func _ready() -> void:
 	click_timer.wait_time = CLICK_TIME
 	click_timer.one_shot = true
 	click_timer.timeout.connect(_on_click_timer_timeout)
-	add_child(click_count)
+	add_child(click_timer)
 
 
-func _process(delta):
+func _process(_delta: float):
 	# If are chilling, we hit 'return'
 	# if state == State.CHILLING: return
 	# _process_walking()
@@ -128,7 +128,7 @@ func _process_walking():
 
 	# Safe Zone
 	# screen_get_usable_rect() return the screen Minus the taskbar/dock
-	var usable_rect = DisplayServer.screen_get_usable_rect()
+	var usable_rect: Rect2i = DisplayServer.screen_get_usable_rect()
 
 	# Check right and left edge
 	if window.position.x + window.size.x > usable_rect.end.x:
@@ -197,11 +197,11 @@ func _process_thrown():
 		anim.play("walk")
 
 
-# Inputhandling for clicking the sprite
+#  Inputhandling for clicking the sprite
 func _on_area_input(_viewport, event, _shape_idx):
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
 		if event.pressed:
-			_register_click()
+			# _register_click()
 			_start_dragging()
 			# start_chilling()
 		else:
@@ -229,17 +229,19 @@ func _start_dragging():
 		anim.play("long_grab")
 
 
-func _end_dragging():
-	if state != State.DRAGGING: return
+# func _end_dragging():
+# 	_register_click()
 
-	var mouse_pos = DisplayServer.mouse_get_position()
-	var moved_distance = mouse_pos.distance_to(drag_start_pos)
+	# if state != State.DRAGGING: return
 
-	if moved_distance < DRAG_THRESHOLD:
-		state = State.WALKING
-		start_chilling()
-	else:
-		state = State.THROWN
+	# var mouse_pos = DisplayServer.mouse_get_position()
+	# var moved_distance = mouse_pos.distance_to(drag_start_pos)
+
+	# if moved_distance < DRAG_THRESHOLD:
+	# 	state = State.WALKING
+	# 	start_chilling()
+	# else:
+	# 	state = State.THROWN
 		# anim.play("thrown")
 
 		# print(last_mouse_pos.x - mouse_pos.x)
@@ -250,7 +252,7 @@ func _end_dragging():
 		# else:
 		# 	anim.play("thrownUp")
 
-		print("start: ", drag_start_pos, ", end: ", mouse_pos, "calculate: ", drag_start_pos - mouse_pos)
+		# print("start: ", drag_start_pos, ", end: ", mouse_pos, "calculate: ", drag_start_pos - mouse_pos)
 
 func _random_animation():
 	while true:
@@ -277,10 +279,43 @@ func _random_animation():
 func _on_click_timer_timeout() -> void:
 	click_count = 0
 
+	if click_count < CLICK_THREHOLD:
+		start_chilling()
 
-func _register_click() -> void:
+
+func _end_dragging() -> void:
+	if state != State.DRAGGING: return
+
+	var mouse_pos = DisplayServer.mouse_get_position()
+	var moved_distance = mouse_pos.distance_to(drag_start_pos)
+
 	click_count += 1
-	pass # continue soon
+	click_timer.start()
+
+	if moved_distance < DRAG_THRESHOLD:
+		state = State.WALKING
+
+		if click_count >= CLICK_THREHOLD:
+			click_count = 0
+			click_timer.stop()
+			_on_multi_click_triggered()
+		else:
+			anim.play("walk")
+	else:
+		state = State.THROWN
+		click_count = 0
+		click_timer.stop()
+
+
+func _on_multi_click_triggered() -> void:
+	print("[Multi CLick Function Log] Multi click triggered!")
+
+	if state != State.CHILLING and state != State.THROWN:
+		state = State.CHILLING
+		anim.play("multi_click")
+		await anim.animation_finished
+		state = State.WALKING
+		anim.play("walk")
 
 
 # This function not working on linux wayland
